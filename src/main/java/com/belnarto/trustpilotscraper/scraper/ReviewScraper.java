@@ -28,7 +28,7 @@ public class ReviewScraper {
     @Value("${trustpilot.review-url}")
     private String reviewUrl;
 
-    @Value("${trustpilot.timeoutSec}")
+    @Value("${trustpilot.timeout-sec}")
     private int timeoutSec;
 
     public ReviewScraper(WebClient.Builder webClientBuilder) {

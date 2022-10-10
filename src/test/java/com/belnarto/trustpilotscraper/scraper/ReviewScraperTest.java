@@ -29,6 +29,9 @@ class ReviewScraperTest {
 
     static MockWebServer mockBackEnd;
 
+    @Autowired
+    ReviewScraper reviewScraper;
+
     @DynamicPropertySource
     static void properties(DynamicPropertyRegistry r) {
         r.add("trustpilot.base-url", () -> "http://localhost:" + mockBackEnd.getPort());
@@ -44,9 +47,6 @@ class ReviewScraperTest {
     static void tearDown() throws IOException {
         mockBackEnd.shutdown();
     }
-
-    @Autowired
-    ReviewScraper reviewScraper;
 
     @Test
     void getReviewSuccessfulWithValues() throws IOException {
