@@ -10,6 +10,6 @@ public class ReviewDto {
     int reviewsCount;
 
     @JsonSerialize(using = RatingSerializer.class)
-    double rating;
+    Double rating;
 
 }

@@ -17,6 +17,7 @@ public class RatingSerializer extends StdSerializer<Double> {
 
     public RatingSerializer(Class<Double> t) {
         super(t);
+        numberFormat.setMinimumFractionDigits(1);
         numberFormat.setMaximumFractionDigits(1);
         numberFormat.setRoundingMode(RoundingMode.FLOOR);
     }
