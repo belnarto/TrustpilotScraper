@@ -1,3 +1,12 @@
 server:
   error:
     include-message: always
+
+spring:
+  codec:
+    max-in-memory-size: 5MB
+
+trustpilot:
+  base-url: https://www.trustpilot.com
+  review-url: ${trustpilot.base-url}/review/
+  timeoutSec: 3
