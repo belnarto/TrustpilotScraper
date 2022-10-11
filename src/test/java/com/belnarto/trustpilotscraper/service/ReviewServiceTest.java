@@ -6,10 +6,11 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.belnarto.trustpilotscraper.config.TestRedisConfiguration;
 import com.belnarto.trustpilotscraper.dto.ReviewDto;
 import com.belnarto.trustpilotscraper.scraper.ReviewScraper;
 import java.time.Duration;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,9 +20,10 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
+import redis.embedded.RedisServer;
 
 @ExtendWith(SpringExtension.class)
-@SpringBootTest(classes = TestRedisConfiguration.class)
+@SpringBootTest
 class ReviewServiceTest {
 
     @Autowired
@@ -29,6 +31,21 @@ class ReviewServiceTest {
 
     @MockBean
     ReviewScraper reviewScraper;
+
+    private static RedisServer redisServer;
+
+    @BeforeAll
+    static void beforeAll() {
+        redisServer = RedisServer.builder()
+            .setting("maxmemory 128M") // https://github.com/kstyrc/embedded-redis/issues/51
+            .build();
+        redisServer.start();
+    }
+
+    @AfterAll
+    static void afterAll() {
+        redisServer.stop();
+    }
 
     @Test
     void getReviewByDomainNoCache() {

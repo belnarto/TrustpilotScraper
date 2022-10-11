@@ -11,6 +11,7 @@ import java.text.NumberFormat;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
@@ -24,6 +25,9 @@ class ReviewControllerTest {
 
     @Autowired
     WebTestClient webClient;
+
+    @Value("${trustpilot.default-error-message}")
+    private String defaultErrorMessage;
 
     @MockBean
     ReviewService reviewService;
@@ -70,19 +74,17 @@ class ReviewControllerTest {
 
     @Test
     void getReviewServerError() {
-        String errorMessage = "some server error";
-
         when(reviewService.getReviewByDomain(anyString()))
-            .thenReturn(Mono.error(new Exception(errorMessage)));
+            .thenReturn(Mono.error(new Exception(defaultErrorMessage)));
 
-        webClient.get().uri("/reviews/anyDomain")
+        webClient.get().uri("/reviews/remoteError")
             .accept(MediaType.APPLICATION_JSON)
             .exchange()
             .expectStatus().is5xxServerError()
             .expectHeader().contentType(MediaType.APPLICATION_JSON)
             .expectBody()
             .jsonPath("$.status").isEqualTo(500)
-            .jsonPath("$.message").isEqualTo(errorMessage);
+            .jsonPath("$.message").isEqualTo(defaultErrorMessage);
     }
 
 }

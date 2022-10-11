@@ -14,3 +14,4 @@ trustpilot:
   review-url: ${trustpilot.base-url}/review/
   timeout-sec: 3
   cache-ttl-sec: 3600
+  default-error-message: "Please contact belnarto@gmail.com for this error"

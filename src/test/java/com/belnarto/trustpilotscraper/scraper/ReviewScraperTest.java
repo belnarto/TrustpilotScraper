@@ -27,25 +27,25 @@ import reactor.test.StepVerifier;
 @SpringBootTest
 class ReviewScraperTest {
 
-    static MockWebServer mockBackEnd;
+    static MockWebServer mockTrustpilotBackEnd;
 
     @Autowired
     ReviewScraper reviewScraper;
 
     @DynamicPropertySource
     static void properties(DynamicPropertyRegistry r) {
-        r.add("trustpilot.base-url", () -> "http://localhost:" + mockBackEnd.getPort());
+        r.add("trustpilot.base-url", () -> "http://localhost:" + mockTrustpilotBackEnd.getPort());
     }
 
     @BeforeAll
     static void setUp() throws IOException {
-        mockBackEnd = new MockWebServer();
-        mockBackEnd.start();
+        mockTrustpilotBackEnd = new MockWebServer();
+        mockTrustpilotBackEnd.start();
     }
 
     @AfterAll
     static void tearDown() throws IOException {
-        mockBackEnd.shutdown();
+        mockTrustpilotBackEnd.shutdown();
     }
 
     @Test
@@ -53,7 +53,7 @@ class ReviewScraperTest {
         String path = "/mockwebserver/successfulWithValues.html";
         String mockHtml = IOUtils.toString(requireNonNull(this.getClass().getResourceAsStream(path)), UTF_8);
 
-        mockBackEnd.enqueue(new MockResponse()
+        mockTrustpilotBackEnd.enqueue(new MockResponse()
             .setBody(mockHtml)
             .addHeader("Content-Type", "text/html; charset=utf-8"));
 
@@ -69,7 +69,7 @@ class ReviewScraperTest {
         String path = "/mockwebserver/successfulWithoutValues.html";
         String mockHtml = IOUtils.toString(requireNonNull(this.getClass().getResourceAsStream(path)), UTF_8);
 
-        mockBackEnd.enqueue(new MockResponse()
+        mockTrustpilotBackEnd.enqueue(new MockResponse()
             .setBody(mockHtml)
             .addHeader("Content-Type", "text/html; charset=utf-8"));
 
@@ -85,7 +85,7 @@ class ReviewScraperTest {
         String path = "/mockwebserver/successfulDomainNotFound.html";
         String mockHtml = IOUtils.toString(requireNonNull(this.getClass().getResourceAsStream(path)), UTF_8);
 
-        mockBackEnd.enqueue(new MockResponse()
+        mockTrustpilotBackEnd.enqueue(new MockResponse()
             .setStatus("HTTP/1.1 404 NOT_FOUND")
             .setBody(mockHtml)
             .addHeader("Content-Type", "text/html; charset=utf-8"));
@@ -102,7 +102,7 @@ class ReviewScraperTest {
         String path = "/mockwebserver/remoteError.html";
         String mockHtml = IOUtils.toString(requireNonNull(this.getClass().getResourceAsStream(path)), UTF_8);
 
-        mockBackEnd.enqueue(new MockResponse()
+        mockTrustpilotBackEnd.enqueue(new MockResponse()
             .setStatus("HTTP/1.1 403 FORBIDDEN")
             .setBody(mockHtml)
             .addHeader("Content-Type", "text/html; charset=utf-8"));
